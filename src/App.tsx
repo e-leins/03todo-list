@@ -2,6 +2,7 @@ import React, {useState} from 'react';
 import './App.css';
 import {TaskType, Todolist} from "./Todolist";
 import {v1} from "uuid";
+import AddItemForm from "./AddItemForm";
 
 export type FilterValuesType = "all" | "completed" | "active";
 type TodoListType = {
@@ -36,7 +37,6 @@ function App() {
         })
     ;
 
-    // let [filter, setFilter] = useState<FilterValuesType>("all");
 
     function removeTask(id: string, todoListID: string) {
         let todoListTasks = tasks[todoListID];
@@ -60,13 +60,6 @@ function App() {
 
     }
 
-    // let tasksForTodolist = tasks;
-    // if (filter === "completed") {
-    //     tasksForTodolist = tasks.filter(t => t.isDone === true);
-    //
-    // }
-    // if (filter === "active") {
-    //     tasksForTodolist = tasks.filter(t => t.isDone === false);
 
 
     function changeStatus(id: string, isDone: boolean, todoListID: string) {
@@ -77,7 +70,27 @@ function App() {
             setTasks({...tasks});
         }
     }
-
+    function changeTaskTitle (id:string,title:string,todoListID:string){
+        let todoListTasks = tasks[todoListID];
+        let task = todoListTasks.find(t => t.id === id);
+        if(task){
+            task.title=title;
+            setTasks ({...tasks})
+        }
+    }
+    function addTodoList (title:string){
+        let newTodoListID= v1();
+         let newTodoList:TodoListType={
+            id:newTodoListID,
+             title:title,
+             filter:"all"
+        }
+        setTodoLists([newTodoList,...todoLists]);
+         setTasks( {
+             ...tasks,
+             [newTodoListID]:[]
+         })
+    }
     function removeTodoList(id: string) {
         setTodoLists(todoLists.filter(tl => tl.id !== id));
         delete tasks[id];
@@ -86,6 +99,7 @@ function App() {
 
     return (
         <div className="App">
+            <AddItemForm addItem={addTodoList}/>
             {todoLists.map(tl => {
                 let allTasks = tasks[tl.id];
                 let tasksForTodolist = allTasks;
@@ -107,7 +121,8 @@ function App() {
                         addTask={addTask}
                         changeTaskStatus={changeStatus}
                         filter={tl.filter}
-                        removeTodoList={removeTodoList}/>
+                        removeTodoList={removeTodoList}
+                        changeTaskTitle= {changeTaskTitle}/>
 
                 )
             })}
