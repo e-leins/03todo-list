@@ -2,6 +2,8 @@ import React, {ChangeEvent, useState, KeyboardEvent} from "react";
 import {FilterValuesType} from "./App";
 import AddItemForm from "./AddItemForm";
 import {EditableSpan} from "./EditableSpan";
+import {Button, Checkbox, IconButton} from "@material-ui/core";
+import {Delete} from "@material-ui/icons";
 
 export type TaskType = {
     id: string
@@ -35,34 +37,53 @@ export function Todolist(props: PropsType) {
         props.changeTodoListTitle(newTitle, props.id)
     }
     return <div>
-        <h3> <EditableSpan title={props.title} onChange={changeTodoListTitle} /> <button onClick={deleteTodoList}> X</button></h3>
+        <h3><EditableSpan title={props.title} onChange={changeTodoListTitle}/>
+            {/*<button onClick={deleteTodoList}> X</button>*/}
+            <IconButton onClick={deleteTodoList}> <Delete/></IconButton>
+        </h3>
         <AddItemForm addItem={createTaskTitle}/>
 
         <ul>
-            {     props.tasks.map(t => {
-                    const onRemoveHandler = () => props.removeTask(t.id,props.id,);
-                    const onStatusChangeTaskHandler = (event: ChangeEvent<HTMLInputElement>) => {
-                        props.changeTaskStatus(t.id,event.currentTarget.checked,props.id, )
-                    }
-                    const onTitleChangeHandler=(newTitle:string)=>{
-                        props.changeTaskTitle(t.id,newTitle,props.id);
-                    }
-                    return <li key={t.id} className={t.isDone ? "is-done" : ""}>
-                        <input type="checkbox" onChange={onStatusChangeTaskHandler} checked={t.isDone}/>
-                       <EditableSpan title={t.title}
-                                     onChange={onTitleChangeHandler}/>
-                        <button onClick={onRemoveHandler}> x</button>
-                    </li>
-                })
+            {props.tasks.map(t => {
+                const onRemoveHandler = () => props.removeTask(t.id, props.id,);
+                const onStatusChangeTaskHandler = (event: ChangeEvent<HTMLInputElement>) => {
+                    props.changeTaskStatus(t.id, event.currentTarget.checked, props.id,)
+                }
+                const onTitleChangeHandler = (newTitle: string) => {
+                    props.changeTaskTitle(t.id, newTitle, props.id);
+                }
+                return <li key={t.id} className={t.isDone ? "is-done" : ""}>
+                    <Checkbox
+                        color={"primary"}
+                        checked={t.isDone}
+                        onChange={onStatusChangeTaskHandler}/>
+                    {/*<input type="checkbox" onChange={onStatusChangeTaskHandler} checked={t.isDone}/>*/}
+                    <EditableSpan title={t.title}
+                                  onChange={onTitleChangeHandler}/>
+                    <button onClick={onRemoveHandler}> x</button>
+                </li>
+            })
             }
         </ul>
         <div>
-            <button className={props.filter === 'all' ? "active-filter" : ""} onClick={onAllClickHandler}>All</button>
-            <button className={props.filter === 'active' ? "active-filter" : ""} onClick={onActiveClickHandler}>Active
-            </button>
-            <button className={props.filter === 'completed' ? "active-filter" : ""}
-                    onClick={onCompletedClickHandler}>Completed
-            </button>
+            <Button
+                className={props.filter === 'all' ? "active-filter" : ""}
+                onClick={onAllClickHandler}
+                color ={"primary"}
+                variant= {"outlined"}>
+                All</Button>
+            <Button
+                className={props.filter === 'active' ? "active-filter" : ""}
+                onClick={onActiveClickHandler}
+                color = {"primary"}
+                variant= {"outlined"}
+            >
+                Active            </Button>
+            <Button className={props.filter === 'completed' ? "active-filter" : ""}
+                    onClick={onCompletedClickHandler}
+                    color = {"primary"}
+                    variant= {"outlined"}>
+                Completed  </Button>
         </div>
 
     </div>
